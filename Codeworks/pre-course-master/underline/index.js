@@ -8,6 +8,29 @@ var _ = {};
 // If n is not provided it returns an array with just the first element.
 _.first = function (array, n) {
 
+	//Not an array
+	if (Array.isArray(array) == false) {
+		mocks.arr = [];
+		return mocks.arr;
+	}
+
+	//not a nbr, 0 or neg
+	if (isNaN(n) || n <= 0) {
+		var sliced2=  Array.prototype.slice.call(arguments[0], 0, 1);
+		mocks.arr=sliced2;
+		return mocks.arr;
+	}
+
+
+	if (n > 0 && n <= array.length) {
+		return Array.prototype.slice.call(arguments[0], 0, n);
+
+
+		}
+
+		else return array;
+
+
 };
 
 // _.last(array, [n])
@@ -15,12 +38,53 @@ _.first = function (array, n) {
 // If n is not provided it returns an array with just the last element.
 _.last = function (array, n) {
 
+	if (Array.isArray(arguments[0]) === false) {
+		var sliced5=[];
+		return sliced5;
+	}
+
+	if (isNaN(n) || n <= 0 || typeof n == "undefined") {
+
+		return [mocks.arr[mocks.arr.length-1]];
+	}
+
+	if (n > 0 && n <= array.length) {
+
+		return arguments[0];
+	}
+
+	else return mocks.arr;
+
 };
 
 // _.uniq(array)
 // Produces a duplicate-free version of the array, using === to test equality.
 // In particular only the first occurence of each value is kept.
 _.uniq = function (array) {
+
+	var new_array = [];
+
+//1 - Replacing second occurrences by "x" (something like [1,2,x,3,4,x])
+	 for (var i=0; i < array.length; i++) {
+	   for (var j=0; j < array.length; j++) {
+
+	       if (array[i] === array [j] && i !== j) {
+	          array[j] = "x";
+	       }
+	   }
+	 }
+
+	// 2 - placing the non-letter elements in a new table
+	for (var i=0; i < array.length; i++) {
+	  if (isNaN(array[i]) === false) {
+	      new_array.push (array[i]);
+	  }
+	}
+
+// Remark: if we do not want to change the original array, we can store it in a temp variable, then reassign
+// the content of that variable to array before returning the new_array
+
+return new_array;
 
 };
 
@@ -30,15 +94,27 @@ _.uniq = function (array) {
 // Copies all the own enumerable properties in the source object
 // over to the destination object, and returns it.
 _.extend = function (destination, source) {
-
+	const returnedTarget = Object.assign(destination, source);
+	return returnedTarget;
 };
+
 
 // _.defaults(destination, source)
 // Fills in undefined properties in the destination object
 // with own enumerable properties present in the source object,
 // and returns the destination object.
 _.defaults = function (destination, source) {
+	
+	for (var key in source) {
+			if (!(key in destination)){
+			//if (destination[key] === undefined) {  --> WHY does not work?
+			destination[key] = source[key];
 
+			}
+		}
+	
+
+	return destination;
 };
 
 // COLLECTIONS
@@ -50,6 +126,8 @@ _.defaults = function (destination, source) {
 // Returns the collection for chaining.
 _.each = function (collection, iteratee, context) {
 
+
+	return collection;
 };
 
 // _.contains(collection, value)
