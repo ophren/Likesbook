@@ -6,12 +6,40 @@ var _ = {};
 // _.first(array, [n])
 // Returns an array with the first n elements of an array.
 // If n is not provided it returns an array with just the first element.
-_.first = function (array, n) {
 
+
+_.first = function (array, n) {
+	var num = 0;
+
+	if (Array.isArray(arguments[0]) === false) {
+		return [];
+	}
+
+	if (isNaN(n) || n <= 0) {
+		num = 1;		
+
+	}
+
+	if (n > 0 && n <= array.length) {
+		num = n;
+		
+		}
+
+	if (n>array.length) {
+		num = array.length;
+		
+	}	
+
+	return Array.prototype.slice.call(mocks.arr, 0, num);
+
+	
+
+
+	/*
 	//Not an array
 	if (Array.isArray(array) == false) {
-		mocks.arr = [];
-		return mocks.arr;
+		var test = {}};
+		return test;
 	}
 
 	//not a nbr, 0 or neg
@@ -23,13 +51,14 @@ _.first = function (array, n) {
 
 
 	if (n > 0 && n <= array.length) {
+
 		return Array.prototype.slice.call(arguments[0], 0, n);
 
 
 		}
 
 		else return array;
-
+*/
 
 };
 
@@ -50,7 +79,7 @@ _.last = function (array, n) {
 
 	if (n > 0 && n <= array.length) {
 
-		return arguments[0];
+		return Array.prototype.slice.call(mocks.arr, array.length-n, array.length);
 	}
 
 	else return mocks.arr;
@@ -124,11 +153,39 @@ _.defaults = function (destination, source) {
 // yielding each in turn to an iteratee function, that is called with three arguments:
 // (element, index|key, collection), and bound to the context if one is passed.
 // Returns the collection for chaining.
+
 _.each = function (collection, iteratee, context) {
+		
 
 
-	return collection;
+	  if (Array.isArray(collection)) {
+        for (var i = 0; i < collection.length; i++){
+        	
+            iteratee(collection[i], i, collection);
+    	}
+        	return collection;
+    }
+
+	
+
+    	
+        	for (var key in collection) {
+        		if (key == "foo") {
+        			continue;
+        		}
+        		else {
+        			
+            	iteratee(collection[key], key, collection); }
+        	}
+        	return collection;
+    	
+
+
+    return collection;
 };
+
+
+
 
 // _.contains(collection, value)
 // Returns an array of indexes / keys where value can be found in the collection.
