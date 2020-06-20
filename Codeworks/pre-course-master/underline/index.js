@@ -157,18 +157,16 @@ _.defaults = function (destination, source) {
 _.each = function (collection, iteratee, context) {
 		
 
-
+	  //iterates over array
 	  if (Array.isArray(collection)) {
         for (var i = 0; i < collection.length; i++){
         	
             iteratee(collection[i], i, collection);
     	}
         	return collection;
-    }
+      }
 
-	
-
-    	
+      		//iterates over object ignoring "foo"
         	for (var key in collection) {
         		if (key == "foo") {
         			continue;
@@ -178,9 +176,11 @@ _.each = function (collection, iteratee, context) {
             	iteratee(collection[key], key, collection); }
         	}
         	return collection;
+
+
     	
 
-
+    //returning collection in any case
     return collection;
 };
 
@@ -203,6 +203,38 @@ _.contains = function (collection, value) {
 // Each invocation of iteratee is called with three arguments:
 // (element, index|key, collection), and bound to the context if one is passed.
 _.map = function (collection, iteratee, context) {
+
+	var values_arr = [];
+	var values_arr2 = [];
+
+	  //iterates over array
+	  if (Array.isArray(collection)) {
+        for (var i = 0; i < collection.length; i++){
+        	
+            var test = iteratee(collection[i], i, collection);
+            values_arr.push (test);
+    	}
+        	return values_arr;
+      }
+
+      		//iterates over object ignoring "foo"
+        	for (var key in collection) {
+        		if (key == "foo") {
+        			continue;
+        		}
+        		else {
+        			
+            		values_arr2.push (iteratee(collection[key], key, collection)); 
+            	}
+        	}
+        	
+        	
+        	return values_arr2;
+
+
+
+
+	
 
 };
 
