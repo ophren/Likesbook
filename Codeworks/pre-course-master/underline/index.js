@@ -1,5 +1,7 @@
 
 var _ = {};
+//var accumulator_temp = 0;
+//var count = 0;
 
 // ARRAYS
 
@@ -207,6 +209,8 @@ _.map = function (collection, iteratee, context) {
 	var values_arr = [];
 	var values_arr2 = [];
 
+								//CALL _.EACH INSTEAD OF C/C
+
 	  //iterates over array
 	  if (Array.isArray(collection)) {
         for (var i = 0; i < collection.length; i++){
@@ -217,8 +221,9 @@ _.map = function (collection, iteratee, context) {
         	return values_arr;
       }
 
-      		//iterates over object ignoring "foo"
-        	for (var key in collection) {
+      
+      //iterates over object ignoring "foo"
+       for (var key in collection) {
         		if (key == "foo") {
         			continue;
         		}
@@ -246,7 +251,116 @@ _.map = function (collection, iteratee, context) {
 // and bound to the context if one is passed. If no accumulator is passed
 // to the initial invocation of reduce, iteratee is not invoked on the first element,
 // and the first element is instead passed as accumulator for the next invocation.
+
+
 _.reduce = function (collection, iteratee, accumulator, context) {
+
+
+	
+	var count = 0;
+
+	//Handling objects
+	if  (Array.isArray(collection) == false) {
+
+
+		if (accumulator == undefined) {
+
+			
+
+			accumulator = collection[Object.keys(collection)[0]]; //1
+			var temp = collection[Object.keys(collection)[0]];
+
+			for (var key in collection) {
+				count++;
+				if (key == "foo" || count === 1) {
+        			continue;
+        		}
+
+        		else {
+				var element = collection[key]; 
+				accumulator = iteratee(accumulator, element, key, collection);
+				}
+			}
+
+		
+			return accumulator;
+		}
+
+
+
+
+		else {
+
+			for (var key in collection) {
+				var element = collection[key];				
+				accumulator = iteratee(accumulator, element, key, collection);
+
+			}
+
+			return accumulator;
+		}
+
+	}
+
+
+
+	//Handling arrays (with defined and undefined accumulator)
+    if (Array.isArray(collection)) {
+		if (accumulator == undefined) {
+			accumulator = collection[0];
+		
+			for (var i=1; i<collection.length; i++) {
+				var element = collection[i];
+				accumulator = iteratee(accumulator, element, i, collection);
+			}
+		
+			return accumulator;
+
+		}
+
+		else {
+
+			for (var i=0; i<collection.length; i++) {
+				var element = collection[i];
+				accumulator = iteratee(accumulator, element, i, collection);
+			}
+		
+			return accumulator;
+
+	
+		}
+	}
+
+	//Handling objects
+
+
+/*
+		if (accumulator == undefined) {
+			accumulator = collection[0];
+//NEED DEFINE ELEMENT (=keys)
+
+			for (var key in collection) {
+				var value = collection[key];
+				accumulator = iteratee(accumulator, element, value, collection);
+
+			}
+
+			return accumulator;
+		}
+
+	else {
+
+			for (var key in collection) {
+				var value = collection[key];
+				accumulator = iteratee(accumulator, element, value, collection);
+
+			}
+
+			return accumulator;
+		}
+
+	}
+*/
 
 };
 

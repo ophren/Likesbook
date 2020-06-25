@@ -296,6 +296,7 @@ describe('Collections', function () {
         arr[i].should.equal(el);
         return accumulator.toString() + el.toString();
       }).should.equal(mocks.stringifiedArrElms);
+      
       _.reduce(mocks.obj, function (accumulator, val, key, obj) {
         obj[key].should.equal(val);
         return accumulator.toString() + val.toString();
