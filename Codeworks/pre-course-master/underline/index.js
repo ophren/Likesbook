@@ -255,17 +255,13 @@ _.map = function (collection, iteratee, context) {
 
 _.reduce = function (collection, iteratee, accumulator, context) {
 
-
-	
 	var count = 0;
 
 	//Handling objects
 	if  (Array.isArray(collection) == false) {
 
 
-		if (accumulator == undefined) {
-
-			
+		if (accumulator == undefined) {	
 
 			accumulator = collection[Object.keys(collection)[0]]; //1
 			var temp = collection[Object.keys(collection)[0]];
@@ -281,13 +277,9 @@ _.reduce = function (collection, iteratee, accumulator, context) {
 				accumulator = iteratee(accumulator, element, key, collection);
 				}
 			}
-
-		
+	
 			return accumulator;
 		}
-
-
-
 
 		else {
 
@@ -301,7 +293,6 @@ _.reduce = function (collection, iteratee, accumulator, context) {
 		}
 
 	}
-
 
 
 	//Handling arrays (with defined and undefined accumulator)
@@ -326,41 +317,9 @@ _.reduce = function (collection, iteratee, accumulator, context) {
 			}
 		
 			return accumulator;
-
 	
 		}
 	}
-
-	//Handling objects
-
-
-/*
-		if (accumulator == undefined) {
-			accumulator = collection[0];
-//NEED DEFINE ELEMENT (=keys)
-
-			for (var key in collection) {
-				var value = collection[key];
-				accumulator = iteratee(accumulator, element, value, collection);
-
-			}
-
-			return accumulator;
-		}
-
-	else {
-
-			for (var key in collection) {
-				var value = collection[key];
-				accumulator = iteratee(accumulator, element, value, collection);
-
-			}
-
-			return accumulator;
-		}
-
-	}
-*/
 
 };
 
@@ -369,7 +328,50 @@ _.reduce = function (collection, iteratee, accumulator, context) {
 // that pass a truth test (predicate). Predicate is called with three arguments:
 // (element, index|key, collection), and bound to the context if one is passed.
 _.filter = function (collection, predicate, context) {
+	
+	var res = [];
 
+
+	// 1 - Handling array
+
+	if (Array.isArray(collection)) {
+
+		for (var i=0; i<collection.length; i++) {
+			
+			var element = collection[i];
+
+	    	if (collection[i]) {
+	    		res.push(predicate (element, i, collection));
+	    	}		
+
+		}
+		
+		return res;
+
+	}
+
+	// 2 - handling object
+
+	if  (Array.isArray(collection) == false) {
+
+
+		for (var key in collection) {
+
+				var element = collection[key]; 
+				
+				if (key == "foo") {
+        			continue;
+        		}
+
+        		if (collection[key]) {
+	    			res.push(predicate (element, key, collection));
+	    		}	
+			
+				
+		}
+	
+		return res;
+	}
 };
 
 // _.reject(collection, predicate, [context])
