@@ -161,14 +161,15 @@ _.each = function (collection, iteratee, context) {
 
 	  //iterates over array
 	  if (Array.isArray(collection)) {
-        for (var i = 0; i < collection.length; i++){
+        for (var i = 0; i < collection.length; i++) {
         	
             iteratee(collection[i], i, collection);
     	}
         	return collection;
       }
 
-      		//iterates over object ignoring "foo"
+
+     //iterates over object ignoring "foo"
         	for (var key in collection) {
         		if (key == "foo") {
         			continue;
@@ -209,7 +210,6 @@ _.map = function (collection, iteratee, context) {
 	var values_arr = [];
 	var values_arr2 = [];
 
-								//CALL _.EACH INSTEAD OF C/C
 
 	  //iterates over array
 	  if (Array.isArray(collection)) {
@@ -232,14 +232,8 @@ _.map = function (collection, iteratee, context) {
             		values_arr2.push (iteratee(collection[key], key, collection)); 
             	}
         	}
-        	
-        	
+        	        	
         	return values_arr2;
-
-
-
-
-	
 
 };
 
@@ -340,8 +334,8 @@ _.filter = function (collection, predicate, context) {
 			
 			var element = collection[i];
 
-	    	if (collection[i]) {
-	    		res.push(predicate (element, i, collection));
+	    	if (predicate (element, i, collection)) {
+	    		res.push(element);
 	    	}		
 
 		}
@@ -363,11 +357,12 @@ _.filter = function (collection, predicate, context) {
         			continue;
         		}
 
-        		if (collection[key]) {
-	    			res.push(predicate (element, key, collection));
-	    		}	
+        		if (predicate (element, key, collection)) {
+        			//var test = predicate, log it
+	    		res.push(element);
+	    	}		
 			
-				
+
 		}
 	
 		return res;
@@ -381,6 +376,63 @@ _.filter = function (collection, predicate, context) {
 // TIP: can you reuse _.filter()?
 _.reject = function (collection, predicate, context) {
 
+	var res = [];
+
+	// 1 - Handling objects
+
+	if  (Array.isArray(collection) == false) {
+
+
+		for (var key in collection) {
+				
+				var element = collection[key]; 
+
+				if (key == "foo") {
+        			continue;
+        		}
+
+				if (!(predicate (element, key, collection))) {
+	    		res.push(element);
+	    	}	
+
+/*
+				if (collection[key] && key !== "foo" && key !== null) {
+
+					res.push(predicate (element, key, collection));
+
+				}
+				*/
+        								
+		}
+	
+		return res;
+	}
+
+	// 2 - Handling arrays
+
+	if (Array.isArray(collection)) {
+
+		for (var i=0; i<collection.length; i++) {
+			
+			var element = collection[i];
+			
+			if (!(predicate (element, i, collection))) {
+	    		res.push(element);
+	    	}	
+/*
+			if (collection[i]) {
+					res.push(predicate (element, i, collection));
+
+				}
+*/
+
+		}
+		
+		return res;
+
+	}
+
+
 };
 
 // _.every(collection, [predicate], [context])
@@ -392,7 +444,41 @@ _.reject = function (collection, predicate, context) {
 // Because of the short-circuiting though, you need to re-implement a modified _.each().
 _.every = function (collection, predicate, context) {
 
+	 //iterates over array
+	  if (Array.isArray(collection)) {
+        	for (var i = 0; i < collection.length; i++) {
+        	
+	           
+
+	            if (!(predicate(collection[i], i, collection))) {
+	            	return false; }
+	            
+	    	}
+	        	return true;
+	   }
+
+ 	
+	//iterates over object ignoring "foo"
+
+	if  (Array.isArray(collection) == false) {
+     
+      for (var key in collection) {
+
+	       if (key == "foo") {
+	        	continue;
+	        	}
+
+            if (!(predicate(collection[key], key, collection))) {
+            return false; }
+
+      }  	
+
+      return true;
+    
+  }
+
 };
+
 
 // _.some(collection, [predicate], [context])
 // Returns true if any value in the collection passes the predicate truth test.
@@ -402,6 +488,40 @@ _.every = function (collection, predicate, context) {
 // TIP: what method that you have already implemented can be reused here?
 _.some = function (collection, predicate, context) {
 
+ 	//iterates over array
+	  if (Array.isArray(collection)) {
+        	for (var i = 0; i < collection.length; i++) {
+        	
+	           
+
+	            if (predicate(collection[i], i, collection)) {
+	            	return true; }
+	            
+	    	}
+	        	return false;
+	   }
+
+ 	
+	//iterates over object ignoring "foo"
+
+		if  (Array.isArray(collection) == false) {
+     
+      		for (var key in collection) {
+
+		       if (key == "foo") {
+		        	continue;
+		        	}
+
+	            if (predicate(collection[key], key, collection)) {
+	            return true; }
+
+      }  	
+
+      	return false;
+    
+  	}
+	
+
 };
 
 // _.invoke(collection, methodName, *arguments)
@@ -409,6 +529,57 @@ _.some = function (collection, predicate, context) {
 // indicated by methodName on each value in the collection.
 // Any extra arguments passed to invoke will be forwarded on to the method invocation.
 _.invoke = function (collection, methodName) {
+
+    // Note : extra arguments are used in the called function, see https://www.youtube.com/watch?v=J-8nsiTZDeE
+
+    var arr_res = [];
+    var args = Array.prototype.slice.call (arguments, 2, arguments.length);
+    
+
+    //getting method name for call
+	var fnstring = methodName;
+	var fn = window[fnstring];
+
+
+    	// 1 - Handling arrays
+    	if (Array.isArray(collection)) {
+    		for (var i = 0; i < collection.length; i++) {
+
+    			var res = fn.apply(collection[i], args);
+    			arr_res.push (res);
+              
+    			
+    			//https://stackoverflow.com/questions/359788/how-to-execute-a-javascript-function-when-i-have-its-name-as-a-string
+    		    //https://www.labnol.org/code/20181-call-javascript-function-by-name
+    		    //https://www.sitepoint.com/call-javascript-function-string-without-using-eval/
+    		}
+    		
+    		return arr_res;
+
+    	}
+
+    	// 2 - Handling objects
+    	if (Array.isArray(collection) == false) { 
+
+    		for (var key in collection) {
+    			
+    			if (typeof collection[key] !== 'function') { 
+    				var res = fn.apply(collection[key], args);
+    				arr_res.push (res);
+
+    				}
+    			
+    		}
+    		
+    		return arr_res;
+    	}
+
+
+/*
+
+ return _.map(collection, function(el) {
+        return (func instanceof Function) ? func.apply(el, args) : el[func].apply(el, args);
+    });*/
 
 };
 
@@ -418,6 +589,16 @@ _.invoke = function (collection, methodName) {
 // in the collection, and returns an array with all the values
 // corresponding to the property indicated by propertyName.
 _.pluck = function (collection, propertyName) {
+
+    var arr_res = [];
+
+    for (var i=0; i<collection.length; i++) {
+
+        var res = collection[i][propertyName]; //This is how you use the name of the current property
+        arr_res.push(res);
+    }
+
+    return arr_res;
 
 };
 
@@ -430,7 +611,27 @@ _.pluck = function (collection, propertyName) {
 // instead of having to set a boolean flag and then check it later.
 _.once = function (func) {
 
+
+    //CHEAT! Tester sur jsfiddle
+    //the value of memo does not change because it's on the right side, it cannot be reinitialized with every call.
+   var ran = false, memo;
+
+    return function() {
+      if (ran) return memo;
+        ran = true;
+        memo = func.apply(this, arguments);
+        
+      return memo;
+    };
+    
+
+
+
+
 };
+
+
+var arr = [];
 
 // _.memoize(func)
 // Memoizes a given function by caching the computed result.
@@ -441,6 +642,23 @@ _.once = function (func) {
 // and return that value instead of recomputing it.
 _.memoize = function (func) {
 
+// Example  of the contact list, hardest line is return function
+
+  var cache = [];
+
+  return function(n) {
+
+        var idx=n.toString();
+
+        if(cache[idx] == undefined) {
+            cache[idx] = func(n);
+        }
+
+        return cache[idx];
+
+  };
+  
+
 };
 
 // _.delay(function, wait, *arguments)
@@ -449,6 +667,21 @@ _.memoize = function (func) {
 // on to the function when it is invoked.
 _.delay = function (func, wait) {
 
+// example with args ->  _.delay(console.log, 1000, 'coding is fun!');
+// apply lets you pass as many args as you want, no need to declare x arguments prior to calling the function
+// function (func, wait) can also get "invisible" arguments, here a string. We store them in a variable
+// Then we return the function setTimeout. The problem is that it needs func and wait as arguments, but func needs
+// to pass a string argument. Therefore, we create a function doing that, and pass it as argument to setTimeout.
+
+    var args = Array.prototype.slice.call(arguments, 2);
+
+    return setTimeout(function () {
+        func.apply(null, args);
+    }, wait);
+
+
+
+    
 };
 
 // _.throttle(function, wait)
@@ -460,6 +693,8 @@ _.delay = function (func, wait) {
 _.throttle = function (func, wait) {
 
 };
+
+
 
 // Allow tests to run on the server (leave at the bottom)
 if (typeof window === 'undefined') {
