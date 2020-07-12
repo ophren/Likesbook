@@ -692,6 +692,18 @@ _.delay = function (func, wait) {
 // events that occur faster than you can keep up with.
 _.throttle = function (func, wait) {
 
+    let last = 0;
+
+    return (...args) => {
+        const now = new Date().getTime();
+        
+        if(now - last < wait) {
+            return;
+        }
+
+        last = now;
+        return func (...args);
+    }
 };
 
 
