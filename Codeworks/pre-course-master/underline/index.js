@@ -1,7 +1,5 @@
 
 var _ = {};
-//var accumulator_temp = 0;
-//var count = 0;
 
 // ARRAYS
 
@@ -13,54 +11,31 @@ var _ = {};
 _.first = function (array, n) {
 	var num = 0;
 
-	if (Array.isArray(arguments[0]) === false) {
-		return [];
-	}
+    // QUESTION -> isArray is false for the arguments object and returns an empty array. Why? 
+    // l'algo pense que mocks.argumentsObj n'est pas un array et retourne [];
+    
+    if (typeof array !== "object" || array == null) {
+        return [];
+    }
+    
 
-	if (isNaN(n) || n <= 0) {
-		num = 1;		
+        if (isNaN(n) || n <= 0) {
+        num = 1;        
 
-	}
+        }
 
-	if (n > 0 && n <= array.length) {
-		num = n;
-		
-		}
+        if (n > 0 && n <= array.length) {
+            num = n;
+            
+            }
 
-	if (n>array.length) {
-		num = array.length;
-		
-	}	
-
-	return Array.prototype.slice.call(mocks.arr, 0, num);
-
-	
-
-
-	/*
-	//Not an array
-	if (Array.isArray(array) == false) {
-		var test = {}};
-		return test;
-	}
-
-	//not a nbr, 0 or neg
-	if (isNaN(n) || n <= 0) {
-		var sliced2=  Array.prototype.slice.call(arguments[0], 0, 1);
-		mocks.arr=sliced2;
-		return mocks.arr;
-	}
-
-
-	if (n > 0 && n <= array.length) {
-
-		return Array.prototype.slice.call(arguments[0], 0, n);
-
-
-		}
-
-		else return array;
-*/
+        if (n>array.length) {
+            num = array.length;
+            
+        }   
+    
+	   return Array.prototype.slice.call(array, 0, num);
+    
 
 };
 
@@ -69,10 +44,14 @@ _.first = function (array, n) {
 // If n is not provided it returns an array with just the last element.
 _.last = function (array, n) {
 
+    if (typeof array !== "object" || array == null) {
+        return [];
+    }
+    /*
 	if (Array.isArray(arguments[0]) === false) {
 		var sliced5=[];
 		return sliced5;
-	}
+	}*/
 
 	if (isNaN(n) || n <= 0 || typeof n == "undefined") {
 
@@ -158,33 +137,51 @@ _.defaults = function (destination, source) {
 
 _.each = function (collection, iteratee, context) {
 		
+// bind a function called iteratee to a context (this)
 
-	  //iterates over array
+	  // 1 - iterates over array
+
 	  if (Array.isArray(collection)) {
         for (var i = 0; i < collection.length; i++) {
         	
+            if (context == null) {
             iteratee(collection[i], i, collection);
+            }
+
+            else {
+                var test = iteratee.bind(context);
+                test(); 
+                
+            }
+
     	}
         	return collection;
       }
 
 
-     //iterates over object ignoring "foo"
+     // 2 - iterates over object ignoring "foo"
+
         	for (var key in collection) {
+
         		if (key == "foo") {
         			continue;
         		}
-        		else {
+
+
+        		if (context == null) {
         			
-            	iteratee(collection[key], key, collection); }
+            	iteratee(collection[key], key, collection); 
+                }
+
+
+                else {
+                var test = iteratee.bind(context);
+                test(); 
+                
+                }
         	}
         	return collection;
 
-
-    	
-
-    //returning collection in any case
-    return collection;
 };
 
 
@@ -696,7 +693,7 @@ _.throttle = function (func, wait) {
 
     return (...args) => {
         const now = new Date().getTime();
-        
+
         if(now - last < wait) {
             return;
         }
