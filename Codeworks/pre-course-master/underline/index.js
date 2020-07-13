@@ -148,6 +148,7 @@ _.each = function (collection, iteratee, context) {
             iteratee(collection[i], i, collection);
             }
 
+            //if context passed
             else {
                 var test = iteratee.bind(context);
                 test(); 
@@ -173,7 +174,7 @@ _.each = function (collection, iteratee, context) {
             	iteratee(collection[key], key, collection); 
                 }
 
-
+                //if context passed
                 else {
                 var test = iteratee.bind(context);
                 test(); 
@@ -207,15 +208,33 @@ _.map = function (collection, iteratee, context) {
 	var values_arr = [];
 	var values_arr2 = [];
 
+/* if (context == null) {
+            iteratee(collection[i], i, collection);
+            }
 
-	  //iterates over array
+            //if context passed
+            else {
+                var test = iteratee.bind(context);
+                test(); 
+                
+            }*/
+
+	  // 1 - Iterates over array
 	  if (Array.isArray(collection)) {
         for (var i = 0; i < collection.length; i++){
         	
-            var test = iteratee(collection[i], i, collection);
-            values_arr.push (test);
-    	}
-        	return values_arr;
+            if (context == null) {
+                var test = iteratee(collection[i], i, collection);
+                values_arr.push (test);
+            }
+
+            else {
+                var test = iteratee.bind(context);
+                test(); 
+            }
+
+        }
+            	return values_arr;
       }
 
       
@@ -224,10 +243,17 @@ _.map = function (collection, iteratee, context) {
         		if (key == "foo") {
         			continue;
         		}
-        		else {
-        			
+
+
+        		if (context == null) {
             		values_arr2.push (iteratee(collection[key], key, collection)); 
             	}
+
+                else {
+                    var test = iteratee.bind(context);
+                    test(); 
+
+                }
         	}
         	        	
         	return values_arr2;
@@ -254,18 +280,32 @@ _.reduce = function (collection, iteratee, accumulator, context) {
 
 		if (accumulator == undefined) {	
 
-			accumulator = collection[Object.keys(collection)[0]]; //1
+			accumulator = collection[Object.keys(collection)[0]]; 
 			var temp = collection[Object.keys(collection)[0]];
 
 			for (var key in collection) {
+
 				count++;
+
+                // ignoring object prototype
 				if (key == "foo" || count === 1) {
         			continue;
         		}
 
+
+                if (context == null) {
+                    var element = collection[key]; 
+                    accumulator = iteratee(accumulator, element, key, collection);
+
+                }
+
+                //if context passed 
         		else {
-				var element = collection[key]; 
-				accumulator = iteratee(accumulator, element, key, collection);
+
+                    var test = iteratee.bind(context);
+                    test(); 
+
+
 				}
 			}
 	
@@ -292,8 +332,17 @@ _.reduce = function (collection, iteratee, accumulator, context) {
 			accumulator = collection[0];
 		
 			for (var i=1; i<collection.length; i++) {
-				var element = collection[i];
-				accumulator = iteratee(accumulator, element, i, collection);
+
+                if (context==null) {
+				    var element = collection[i];
+				    accumulator = iteratee(accumulator, element, i, collection);
+                }
+
+                else {
+
+                    var test = iteratee.bind(context);
+                    test(); 
+                }
 			}
 		
 			return accumulator;
@@ -323,7 +372,7 @@ _.filter = function (collection, predicate, context) {
 	var res = [];
 
 
-	// 1 - Handling array
+	// 1 - Handling arrays
 
 	if (Array.isArray(collection)) {
 
@@ -331,9 +380,18 @@ _.filter = function (collection, predicate, context) {
 			
 			var element = collection[i];
 
-	    	if (predicate (element, i, collection)) {
-	    		res.push(element);
-	    	}		
+            if (context == null) {
+
+	    	  if (predicate (element, i, collection)) {
+	    		 res.push(element);
+	    	  }	
+            }
+
+            else {
+
+                    var test = predicate.bind(context);
+                    test(); 
+                }	
 
 		}
 		
@@ -341,7 +399,7 @@ _.filter = function (collection, predicate, context) {
 
 	}
 
-	// 2 - handling object
+	// 2 - handling objects
 
 	if  (Array.isArray(collection) == false) {
 
@@ -354,10 +412,20 @@ _.filter = function (collection, predicate, context) {
         			continue;
         		}
 
-        		if (predicate (element, key, collection)) {
-        			//var test = predicate, log it
-	    		res.push(element);
-	    	}		
+                if (context == null) {
+
+            		if (predicate (element, key, collection)) {
+            			//var test = predicate, log it
+    	    		res.push(element); 
+                    }
+                }
+
+                else {
+
+                    var test = predicate.bind(context);
+                    test(); 
+                }
+	    			
 			
 
 		}
@@ -384,13 +452,23 @@ _.reject = function (collection, predicate, context) {
 				
 				var element = collection[key]; 
 
+                // ignoring object prototype
 				if (key == "foo") {
         			continue;
         		}
 
-				if (!(predicate (element, key, collection))) {
-	    		res.push(element);
-	    	}	
+                if (context == null) {
+
+        				if (!(predicate (element, key, collection))) {
+        	    		res.push(element);
+        	    	    }	
+                }
+
+                else {
+
+                    var test = predicate.bind(context);
+                    test(); 
+                }
 
 /*
 				if (collection[key] && key !== "foo" && key !== null) {
@@ -413,15 +491,17 @@ _.reject = function (collection, predicate, context) {
 			
 			var element = collection[i];
 			
-			if (!(predicate (element, i, collection))) {
-	    		res.push(element);
-	    	}	
-/*
-			if (collection[i]) {
-					res.push(predicate (element, i, collection));
+            if (context == null) {
+    			if (!(predicate (element, i, collection))) {
+    	    		res.push(element);
+    	    	}	
+            }
 
-				}
-*/
+            else {
+
+                var test = predicate.bind(context);
+                test(); 
+                }
 
 		}
 		
@@ -445,10 +525,17 @@ _.every = function (collection, predicate, context) {
 	  if (Array.isArray(collection)) {
         	for (var i = 0; i < collection.length; i++) {
         	
-	           
+	           if (context == null) {
 
-	            if (!(predicate(collection[i], i, collection))) {
-	            	return false; }
+    	            if (!(predicate(collection[i], i, collection))) {
+    	            	return false; }
+                }
+
+                else {
+
+                    var test = predicate.bind(context);
+                    test(); 
+                }
 	            
 	    	}
 	        	return true;
@@ -461,13 +548,23 @@ _.every = function (collection, predicate, context) {
      
       for (var key in collection) {
 
+           // ignoring object prototype
 	       if (key == "foo") {
 	        	continue;
 	        	}
 
-            if (!(predicate(collection[key], key, collection))) {
-            return false; }
+            if (context == null) {
 
+                if (!(predicate(collection[key], key, collection))) {
+                return false; }
+            }
+
+            else {
+
+                var test = predicate.bind(context);
+                test(); 
+                
+            }
       }  	
 
       return true;
@@ -489,13 +586,21 @@ _.some = function (collection, predicate, context) {
 	  if (Array.isArray(collection)) {
         	for (var i = 0; i < collection.length; i++) {
         	
-	           
+	           if (context==null) {
 
-	            if (predicate(collection[i], i, collection)) {
-	            	return true; }
+    	            if (predicate(collection[i], i, collection)) {
+    	            	return true; }
+                }
+
+                else {
+
+                    var test = predicate.bind(context);
+                    test(); 
+                }
 	            
 	    	}
-	        	return false;
+            return false;
+	        	
 	   }
 
  	
@@ -505,18 +610,30 @@ _.some = function (collection, predicate, context) {
      
       		for (var key in collection) {
 
+               //ignoring prototype object
 		       if (key == "foo") {
 		        	continue;
 		        	}
 
-	            if (predicate(collection[key], key, collection)) {
-	            return true; }
+
+                if (context == null) {
+	               if (predicate(collection[key], key, collection)) {
+	               return true; 
+                    }
+                }
+                
+                else {
+
+                    var test = predicate.bind(context);
+                    test(); 
+                }   
+            }
 
       }  	
 
       	return false;
     
-  	}
+  	
 	
 
 };
