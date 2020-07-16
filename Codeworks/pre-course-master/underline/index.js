@@ -163,8 +163,25 @@ _.each = function (collection, iteratee, context) {
      // 2 - iterates over object ignoring "foo"
 
         	for (var key in collection) {
+                //NOT OK -> See Amy's explanation;
 
-        		if (key == "foo") {
+                /*
+                As you discovered, we can use the hasOwnProperty method to return whether the object 
+                has this property directly on its instance (rather than somewhere up the prototype chain). 
+                This hasOwnProperty return a boolean: true if the object has this property, false if the 
+                object does not have the property. Using this boolean value, you can create a conditional 
+                that either executes whatever operations on your collection, or does not execute them (thus 
+                “ignoring the Object prototype”).
+                If you are unsure of how the functions should behave, 
+                check the test files as well as the mock data being passed to the tests. 
+                They should give you a clearer idea of how to approach writing your code.
+                  */
+
+                  // CORRIGER partout
+                  //IF the key we are looking at was inherited from the Object
+                  // prototype, just ignore that specific key by using the instruction"continue"
+        		if (collection.hasOwnProperty(key) == false) {
+
         			continue;
         		}
 
