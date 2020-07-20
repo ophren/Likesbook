@@ -153,3 +153,108 @@ function stringifier (input) {
 if (typeof window === 'undefined') {
   module.exports = stringifier;
 }
+
+
+
+/* ------ 2 ------ */
+
+
+
+
+
+
+
+
+// Returns a stringified version of input,
+// behaving in exactly the same way as JSON.stringify()
+function stringifier (input) {
+        
+        var answer = [];
+
+        // If not an array, it's a basic type. No need to call converter via test in that case
+        // This if statement is a shortcut
+        // CAN BE PLACED IN TEST BEFORE THE FOR LOOP
+
+        if (Array.isArray(input) === false) {
+
+            converter (input);
+        }
+
+
+
+        //CONVERTER
+        // This function converts any type into a string and pushes it to an array
+        function converter (part) {
+
+             if (typeof(input) === 'undefined') {
+    return undefined
+  }
+                
+                if (typeof part == "number")
+                {
+
+                  answer.push(part.toString());
+
+                }
+
+                
+                if (typeof part == "string") {
+
+                  answer.push("\"" + part.toString()+ "\"");
+                }
+
+                if (typeof part == "function") {
+
+                  return "null";
+                }
+
+                 
+        }    
+
+      
+                  
+        //CALLER if array
+        //Identifies the dimensions of the array and calls converter with each value of any array
+        function test (input) {
+            for (var i = 0; i < input.length; i++) {
+
+              if (Array.isArray(input[i])) {
+
+                stringifier (input[i]);
+
+              }
+              
+              else {
+              
+                converter (input[i]);
+                
+                
+              }
+
+            }
+          
+        }
+
+
+          var stringified = answer.join();
+          return stringified;
+
+        
+
+
+ 
+
+// -------- TESTS -------
+
+
+
+}
+// Allow tests to run on the server (leave at the bottom)
+if (typeof window === 'undefined') {
+  module.exports = stringifier;
+}
+
+
+
+
+
